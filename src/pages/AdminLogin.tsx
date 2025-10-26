@@ -14,6 +14,7 @@ export default function AdminLogin() {
       setToken(res.data.token);
       nav("/admin");
     }}>
+      <h1 className="form-stack-heading">Continue as Admin</h1>
       <input value={username} onChange={e=>setU(e.target.value)} className="input-control" placeholder="Username"/>
       <input type="password" value={password} onChange={e=>setP(e.target.value)} className="input-control" placeholder="Password"/>
       <button className="button-primary">Login</button>

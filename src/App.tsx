@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import AdminLogin from "./pages/AdminLogin";
@@ -19,7 +19,16 @@ type ContactInfo = {
 };
 
 export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+function AppContent() {
   const [contactInfo, setContactInfo] = useState<ContactInfo>({});
+  const location = useLocation();
 
   useEffect(() => {
     let isMounted = true;
@@ -63,7 +72,10 @@ export default function App() {
     if (/^https?:\/\//i.test(rawHandle)) {
       try {
         const url = new URL(rawHandle);
-        const handle = url.pathname.replace(/\/+$/, "").split("/").filter(Boolean).pop();
+        const handle = url.pathname.replace(/\/+$/, "")
+          .split("/")
+          .filter(Boolean)
+          .pop();
         const label = handle ? `@${handle.replace(/^@/, "")}` : rawHandle;
         return { instagramHref: rawHandle, instagramLabel: label };
       } catch {
@@ -79,47 +91,53 @@ export default function App() {
   }, [contactInfo]);
 
   const currentYear = new Date().getFullYear();
+  const isOnAdminLogin = location.pathname === "/admin/login";
+  const adminLinkTarget = isOnAdminLogin ? "/" : "/admin/login";
+  const adminLinkLabel = isOnAdminLogin ? "Home" : "Admin login";
 
   return (
-    <BrowserRouter>
-      <div className="app-shell">
-        <header className="site-header" />
-        <Routes>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/blog/:slug" element={<Blog/>}/>
-          <Route path="/admin/login" element={<AdminLogin/>}/>
-          <Route path="/admin" element={<AdminDashboard/>}/>
-          <Route path="/admin/profile" element={<EditProfile/>}/>
-          <Route path="/admin/new" element={<NewPost/>}/>
-        </Routes>
-        <footer className="site-footer">
-          <hr className="section-divider" />
-          <div className="site-footer-actions">
-            <Link to="/admin/login" className="button-secondary">Admin login</Link>
-          </div>
-          <div className="site-footer-contact">
-            {contactInfo.contact_email && (
-              <a
-                href={`mailto:${contactInfo.contact_email}`}
-                className="site-footer-link"
-              >
-                {contactInfo.contact_email}
-              </a>
-            )}
-            {instagramHref && instagramLabel && (
-              <a
-                href={instagramHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="site-footer-link"
-              >
-                {instagramLabel}
-              </a>
-            )}
-          </div>
-          <div className="site-footer-copy">© {currentYear} Yaswanth</div>
-        </footer>
-      </div>
-    </BrowserRouter>
+    <div className="app-shell">
+      <header className="site-header" />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/blog/:slug" element={<Blog />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/profile" element={<EditProfile />} />
+        <Route path="/admin/new" element={<NewPost />} />
+      </Routes>
+      <footer className="site-footer">
+        <hr className="section-divider" />
+        <div className="site-footer-actions">
+          <Link
+            to={adminLinkTarget}
+            className="button-secondary button-secondary--compact"
+          >
+            {adminLinkLabel}
+          </Link>
+        </div>
+        <div className="site-footer-contact">
+          {contactInfo.contact_email && (
+            <a
+              href={`mailto:${contactInfo.contact_email}`}
+              className="site-footer-link"
+            >
+              {contactInfo.contact_email}
+            </a>
+          )}
+          {instagramHref && instagramLabel && (
+            <a
+              href={instagramHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="site-footer-link"
+            >
+              {instagramLabel}
+            </a>
+          )}
+        </div>
+        <div className="site-footer-copy">© {currentYear} Yaswanth</div>
+      </footer>
+    </div>
   );
 }
