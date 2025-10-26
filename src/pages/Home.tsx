@@ -26,6 +26,8 @@ export default function Home() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [showAvatarMessage, setShowAvatarMessage] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -65,6 +67,40 @@ export default function Home() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (!showAvatarMessage) {
+      return;
+    }
+    const timer = window.setTimeout(() => setShowAvatarMessage(false), 1800);
+    return () => window.clearTimeout(timer);
+  }, [showAvatarMessage]);
+
+  function handleAvatarClick() {
+    if (!profile?.avatar_url) {
+      return;
+    }
+    setIsAvatarModalOpen(true);
+    setShowAvatarMessage(true);
+  }
+
+  function handleAvatarClose() {
+    setIsAvatarModalOpen(false);
+    setShowAvatarMessage(false);
+  }
+
+  useEffect(() => {
+    if (!isAvatarModalOpen) {
+      return;
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        handleAvatarClose();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isAvatarModalOpen]);
+
   if (loading) {
     return (
       <div className="home-loading">
@@ -89,11 +125,18 @@ export default function Home() {
       {/* Profile section */}
       <div className="profile-overview">
         {profile?.avatar_url ? (
-          <img
-            src={profile.avatar_url}
-            alt={profile.name || "Avatar"}
-            className="profile-avatar"
-          />
+          <button
+            type="button"
+            className="profile-avatar-trigger"
+            onClick={handleAvatarClick}
+            aria-label="View profile photo"
+          >
+            <img
+              src={profile.avatar_url}
+              alt={profile.name || "Avatar"}
+              className="profile-avatar"
+            />
+          </button>
         ) : (
           <div className="profile-avatar-placeholder" />
         )}
@@ -145,6 +188,34 @@ export default function Home() {
         </div>
       ) : (
         <p className="empty-state">No posts yet.</p>
+      )}
+      {isAvatarModalOpen && profile?.avatar_url && (
+        <div
+          className="avatar-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          onClick={handleAvatarClose}
+        >
+          <button
+            type="button"
+            className="avatar-modal-close"
+            onClick={handleAvatarClose}
+            aria-label="Close profile photo"
+          >
+            ×
+          </button>
+          {showAvatarMessage && (
+            <div className="avatar-modal-message">
+              Oh you want to see me ❤️
+            </div>
+          )}
+          <img
+            src={profile.avatar_url}
+            alt={profile.name || "Avatar enlarged"}
+            className="avatar-modal-image"
+            onClick={(event) => event.stopPropagation()}
+          />
+        </div>
       )}
     </div>
   );
