@@ -6,7 +6,7 @@ export default function AdminLogin() {
   const [username, setU] = useState(""); const [password, setP] = useState("");
   const nav = useNavigate();
   return (
-    <form className="space-y-4" onSubmit={async e=>{
+    <form className="form-stack" onSubmit={async e=>{
       e.preventDefault();
       const res = await api.post("/login",{username, password});
       console.log(res)
@@ -14,9 +14,9 @@ export default function AdminLogin() {
       setToken(res.data.token);
       nav("/admin");
     }}>
-      <input value={username} onChange={e=>setU(e.target.value)} className="border p-2 rounded w-full" placeholder="Username"/>
-      <input type="password" value={password} onChange={e=>setP(e.target.value)} className="border p-2 rounded w-full" placeholder="Password"/>
-      <button className="px-4 py-2 rounded bg-black text-white">Login</button>
+      <input value={username} onChange={e=>setU(e.target.value)} className="input-control" placeholder="Username"/>
+      <input type="password" value={password} onChange={e=>setP(e.target.value)} className="input-control" placeholder="Password"/>
+      <button className="button-primary">Login</button>
     </form>
   );
 }

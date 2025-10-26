@@ -8,11 +8,11 @@ export default function AdminDashboard(){
     if (t) setToken(t);
   },[]);
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Admin dashboard</h1>
-      <div className="flex gap-3">
-        <Link to="/admin/new" className="px-3 py-2 bg-black text-white rounded">New post</Link>
-        <Link to="/admin/profile" className="px-3 py-2 border rounded">Edit profile</Link>
+    <div className="admin-dashboard">
+      <h1 className="dashboard-heading">Admin dashboard</h1>
+      <div className="dashboard-actions">
+        <Link to="/admin/new" className="button-primary">New post</Link>
+        <Link to="/admin/profile" className="button-secondary">Edit profile</Link>
       </div>
     </div>
   );

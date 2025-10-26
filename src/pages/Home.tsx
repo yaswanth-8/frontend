@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "../api";
+import { api, resolvePublicUrl } from "../api";
 import { Link } from "react-router-dom";
 
 interface BlogPost {
@@ -36,8 +36,24 @@ export default function Home() {
         ]);
 
         const postsData = Array.isArray(postsRes.data) ? postsRes.data : [];
-        setPosts(postsData);
-        setProfile(profileRes.data || null);
+        setPosts(
+          postsData.map((p) => ({
+            ...p,
+            cover_url: resolvePublicUrl(p.cover_url) ?? p.cover_url,
+          })),
+        );
+        const profileData = profileRes.data
+          ? {
+              ...profileRes.data,
+              cover_url:
+                resolvePublicUrl(profileRes.data.cover_url) ??
+                profileRes.data.cover_url,
+              avatar_url:
+                resolvePublicUrl(profileRes.data.avatar_url) ??
+                profileRes.data.avatar_url,
+            }
+          : null;
+        setProfile(profileData);
       } catch (err) {
         console.error("Error fetching data:", err);
         setPosts([]);
@@ -51,47 +67,47 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64 text-slate-500">
+      <div className="home-loading">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="pb-16">
+    <div className="home-page">
       {/* Cover image */}
       {profile?.cover_url && (
-        <div className="rounded-2xl overflow-hidden mb-8 shadow">
+        <div className="profile-cover">
           <img
             src={profile.cover_url}
             alt="Cover"
-            className="w-full h-52 object-cover"
+            className="profile-cover-image"
           />
         </div>
       )}
 
       {/* Profile section */}
-      <div className="flex items-center gap-4 mb-10">
+      <div className="profile-overview">
         {profile?.avatar_url ? (
           <img
             src={profile.avatar_url}
             alt={profile.name || "Avatar"}
-            className="w-16 h-16 rounded-full object-cover border"
+            className="profile-avatar"
           />
         ) : (
-          <div className="w-16 h-16 rounded-full bg-gray-200" />
+          <div className="profile-avatar-placeholder" />
         )}
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">
+          <h1 className="profile-name">
             {profile?.name || "Yaswanth"}
           </h1>
-          <p className="text-slate-600">
+          <p className="profile-summary">
             {profile?.summary || "Welcome to my personal blog."}
           </p>
           {profile?.contact_email && (
             <a
               href={`mailto:${profile.contact_email}`}
-              className="text-blue-600 text-sm hover:underline"
+              className="profile-contact"
             >
               {profile.contact_email}
             </a>
@@ -100,25 +116,25 @@ export default function Home() {
       </div>
 
       {/* Blog posts section */}
-      <h2 className="text-xl font-semibold mb-4">Latest Posts</h2>
+      <h2 className="section-heading">Latest Posts</h2>
       {Array.isArray(posts) && posts.length > 0 ? (
-        <div className="space-y-4">
+        <div className="post-feed">
           {posts.map((p) => (
             <Link
               key={p.slug}
               to={`/blog/${p.slug}`}
-              className="block border rounded-xl hover:shadow-md transition bg-white"
+              className="post-card"
             >
               {p.cover_url && (
                 <img
                   src={p.cover_url}
                   alt={p.title}
-                  className="w-full h-48 object-cover rounded-t-xl"
+                  className="post-card-image"
                 />
               )}
-              <div className="p-4">
-                <h3 className="text-lg font-semibold">{p.title}</h3>
-                <p className="text-sm text-slate-600">
+              <div className="post-card-body">
+                <h3 className="post-card-title">{p.title}</h3>
+                <p className="post-card-meta">
                   {p.published_at
                     ? new Date(p.published_at).toLocaleDateString()
                     : "Unpublished"}
@@ -128,7 +144,7 @@ export default function Home() {
           ))}
         </div>
       ) : (
-        <p className="text-slate-500 italic">No posts yet.</p>
+        <p className="empty-state">No posts yet.</p>
       )}
     </div>
   );

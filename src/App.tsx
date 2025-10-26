@@ -9,11 +9,11 @@ import NewPost from "./pages/NewPost";
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="max-w-3xl mx-auto px-4">
-        <header className="py-6 flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold">simply yaswanth</Link>
-          <nav className="space-x-4">
-            <Link to="/admin/login" className="text-sm">Admin</Link>
+      <div className="app-shell">
+        <header className="site-header">
+          <Link to="/" className="site-title">simply yaswanth</Link>
+          <nav className="site-nav">
+            <Link to="/admin/login" className="site-nav-link">Admin</Link>
           </nav>
         </header>
         <Routes>
@@ -24,7 +24,7 @@ export default function App() {
           <Route path="/admin/profile" element={<EditProfile/>}/>
           <Route path="/admin/new" element={<NewPost/>}/>
         </Routes>
-        <footer className="py-10 text-center text-sm text-slate-500">© {new Date().getFullYear()} Yaswanth</footer>
+        <footer className="site-footer">© {new Date().getFullYear()} Yaswanth</footer>
       </div>
     </BrowserRouter>
   );
