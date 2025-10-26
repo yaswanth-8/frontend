@@ -111,54 +111,51 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      {/* Cover image */}
-      {profile?.cover_url && (
-        <div className="profile-cover">
-          <img
-            src={profile.cover_url}
-            alt="Cover"
-            className="profile-cover-image"
-          />
-        </div>
-      )}
-
-      {/* Profile section */}
-      <div className="profile-overview">
-        {profile?.avatar_url ? (
-          <button
-            type="button"
-            className="profile-avatar-trigger"
-            onClick={handleAvatarClick}
-            aria-label="View profile photo"
-          >
+      <div className={`profile-hero${profile?.cover_url ? " has-cover" : ""}`}>
+        {/* Cover image */}
+        {profile?.cover_url && (
+          <div className="profile-cover">
             <img
-              src={profile.avatar_url}
-              alt={profile.name || "Avatar"}
-              className="profile-avatar"
+              src={profile.cover_url}
+              alt="Cover"
+              className="profile-cover-image"
             />
-          </button>
-        ) : (
-          <div className="profile-avatar-placeholder" />
+          </div>
         )}
-        <div>
-          <h1 className="profile-name">
-            {profile?.name || "Yaswanth"}
-          </h1>
-          <p className="profile-summary">
-            {profile?.summary || "Welcome to my personal blog."}
-          </p>
-          {profile?.contact_email && (
-            <a
-              href={`mailto:${profile.contact_email}`}
-              className="profile-contact"
-            >
-              {profile.contact_email}
-            </a>
-          )}
+
+        {/* Profile section */}
+        <div className="profile-overview">
+          <div className="profile-avatar-wrapper">
+            {profile?.avatar_url ? (
+              <button
+                type="button"
+                className="profile-avatar-trigger"
+                onClick={handleAvatarClick}
+                aria-label="View profile photo"
+              >
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.name || "Avatar"}
+                  className="profile-avatar"
+                />
+              </button>
+            ) : (
+              <div className="profile-avatar-placeholder" />
+            )}
+          </div>
+          <div className="profile-details">
+            <h1 className="profile-name">
+              {profile?.name || "Yaswanth"}
+            </h1>
+            <p className="profile-summary">
+              {profile?.summary || "Welcome to my personal blog."}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Blog posts section */}
+      <hr className="section-divider" />
       <h2 className="section-heading">Latest Posts</h2>
       {Array.isArray(posts) && posts.length > 0 ? (
         <div className="post-feed">

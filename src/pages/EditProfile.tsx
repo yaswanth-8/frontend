@@ -21,6 +21,20 @@ export default function EditProfile(){
       <input className="input-control" placeholder="Name" value={profile.name||""} onChange={e=>setProfile({...profile,name:e.target.value})}/>
       <textarea className="input-control input-control--textarea" placeholder="Summary" value={profile.summary||""} onChange={e=>setProfile({...profile,summary:e.target.value})}/>
       <input className="input-control" placeholder="Contact email" value={profile.contact_email||""} onChange={e=>setProfile({...profile,contact_email:e.target.value})}/>
+      <input
+        className="input-control"
+        placeholder="Instagram handle or URL"
+        value={profile.socials?.instagram || ""}
+        onChange={e =>
+          setProfile({
+            ...profile,
+            socials: {
+              ...(profile.socials || {}),
+              instagram: e.target.value,
+            },
+          })
+        }
+      />
       <div className="inline-actions">
         <input type="file" className="file-input" onChange={async e=>{ const f=e.target.files?.[0]; if (f) setProfile({...profile,avatar_url:await uploadImage(f)}); }} />
         <input type="file" className="file-input" onChange={async e=>{ const f=e.target.files?.[0]; if (f) setProfile({...profile,cover_url:await uploadImage(f)}); }} />
