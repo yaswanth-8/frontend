@@ -1,35 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import Blog from "./pages/Blog";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import EditProfile from "./pages/EditProfile";
+import NewPost from "./pages/NewPost";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <BrowserRouter>
+      <div className="max-w-3xl mx-auto px-4">
+        <header className="py-6 flex justify-between items-center">
+          <Link to="/" className="text-2xl font-bold">simply yaswanth</Link>
+          <nav className="space-x-4">
+            <Link to="/admin/login" className="text-sm">Admin</Link>
+          </nav>
+        </header>
+        <Routes>
+          <Route path="/" element={<Home/>}/>
+          <Route path="/blog/:slug" element={<Blog/>}/>
+          <Route path="/admin/login" element={<AdminLogin/>}/>
+          <Route path="/admin" element={<AdminDashboard/>}/>
+          <Route path="/admin/profile" element={<EditProfile/>}/>
+          <Route path="/admin/new" element={<NewPost/>}/>
+        </Routes>
+        <footer className="py-10 text-center text-sm text-slate-500">© {new Date().getFullYear()} Yaswanth</footer>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </BrowserRouter>
+  );
 }
-
-export default App
